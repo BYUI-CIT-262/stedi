@@ -20,7 +20,7 @@ public class Configuration {
 
         } catch (Exception e){ //we didn't find any application.conf files on the classpath (example, standalone jar)
 
-            File configFile = new File("/Applications/steptimerwebsocket/application.conf");
+            File configFile = new File("/home/workspace/stedi-application/application.conf");
             config = ConfigFactory.parseFile(configFile);
         }
         return config;
