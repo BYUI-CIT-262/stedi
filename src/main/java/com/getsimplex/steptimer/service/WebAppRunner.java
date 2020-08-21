@@ -20,6 +20,9 @@ public class WebAppRunner {
     public static void main(String[] args){
 
         Spark.port(getHerokuAssignedPort());
+
+        createTestUser();
+
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
         staticFileLocation("/public");
         //webSocket("/socket", WebSocketHandler.class);
@@ -146,5 +149,19 @@ public class WebAppRunner {
             return Integer.parseInt(processBuilder.environment().get("PORT"));
         }
         return Configuration.getConfiguration().getInt("suresteps.port"); //return default port if heroku-port isn't set (i.e. on localhost)
+    }
+
+    private static void createTestUser(){//for Udacity course local use only
+
+        try {
+            User user = new User();
+            user.setUserName("clinicmanager");
+            user.setPassword("Cl1n1cM@n@ger");
+            user.setVerifyPassword("Cl1n1cM@n@ger");
+            user.setAccountType("personal");
+            CreateNewUser.createUser(user);
+        } catch (Exception e){
+            System.out.println("Unable to create test user due to exception: "+e.getMessage());
+        }
     }
 }

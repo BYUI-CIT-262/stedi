@@ -18,9 +18,14 @@ public class CreateNewUser {
     private static Gson gson = new Gson();
     private static JedisClient jedisClient = new JedisClient();
 
-    public static String handleRequest(Request request) throws Exception{
+    public static String handleRequest (Request request) throws Exception{
         String newUserRequest = request.body();
         User createUser = gson.fromJson(newUserRequest, User.class);
+        return createUser(createUser);
+    }
+
+
+    public static String createUser(User createUser) throws Exception{
         User addUser = new User();
 
         String userName = createUser.getUserName();
