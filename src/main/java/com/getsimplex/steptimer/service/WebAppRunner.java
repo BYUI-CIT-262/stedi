@@ -5,6 +5,7 @@ package com.getsimplex.steptimer.service;
  */
 
 
+import com.getsimplex.steptimer.model.Customer;
 import com.getsimplex.steptimer.model.User;
 import com.getsimplex.steptimer.utils.*;
 import spark.Request;
@@ -22,6 +23,8 @@ public class WebAppRunner {
         Spark.port(getHerokuAssignedPort());
 
         createTestUser();
+
+        createTestCustomer();
 
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
         staticFileLocation("/public");
@@ -93,6 +96,10 @@ public class WebAppRunner {
 
             Boolean tokenExpired = SessionValidator.validateToken(tokenString);
 
+            if (user.isPresent() && tokenExpired && !user.get().isLocked()){//if a user is locked, we won't renew tokens until they are unlocked
+                TokenService.renewToken(tokenString);
+            }
+
             if (!user.isPresent() || tokenExpired.equals(true)) { //Check to see if session expired
                 throw new Exception("Invalid user token");
             }
@@ -162,6 +169,20 @@ public class WebAppRunner {
             CreateNewUser.createUser(user);
         } catch (Exception e){
             System.out.println("Unable to create test user due to exception: "+e.getMessage());
+        }
+    }
+
+    private static void createTestCustomer() {
+        try{
+            Customer customer = new Customer();
+            customer.setCustomerName("Steady Senior");
+            customer.setEmail("steady@stedi.fit");
+            customer.setPhone("8015551212");
+            customer.setBirthDay("1901-01-01");
+            CreateNewCustomer.createCustomer(customer);
+        }
+        catch (Exception e){
+            System.out.println("Unable to create customer due to exception: "+e.getMessage());
         }
     }
 }

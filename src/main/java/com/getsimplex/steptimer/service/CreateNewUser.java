@@ -28,6 +28,8 @@ public class CreateNewUser {
     public static String createUser(User createUser) throws Exception{
         User addUser = new User();
 
+        addUser.setLocked(false);//new users start off with a clean slate
+
         String userName = createUser.getUserName();
         String password = createUser.getPassword();
         String verifyPassword = createUser.getVerifyPassword();
