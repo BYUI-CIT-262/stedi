@@ -52,7 +52,7 @@ public class SessionValidator {
     }
 
     public static Boolean validateToken(String tokenString) throws Exception{
-        return validateToken(tokenString);
+        return TokenService.validateToken(tokenString);
     }
 
 

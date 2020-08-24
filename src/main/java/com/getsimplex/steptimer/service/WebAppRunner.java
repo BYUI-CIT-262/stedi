@@ -37,7 +37,7 @@ public class WebAppRunner {
             try{
                 userFilter(req, res);
             } catch (Exception e){
-                return "/";
+                res.redirect("/");
             }
             return StepHistory.getAllTests(req.params(":customer"));
         });
@@ -80,7 +80,7 @@ public class WebAppRunner {
                 userFilter(req, res);
             } catch (Exception e){
                 System.out.println("*** Error Finding Risk Score: "+e.getMessage());
-                return null;
+                throw e;
             }
             return riskScore(req.params(":customer"));
         }));
@@ -98,6 +98,7 @@ public class WebAppRunner {
 
             if (user.isPresent() && tokenExpired && !user.get().isLocked()){//if a user is locked, we won't renew tokens until they are unlocked
                 TokenService.renewToken(tokenString);
+                return;
             }
 
             if (!user.isPresent() || tokenExpired.equals(true)) { //Check to see if session expired

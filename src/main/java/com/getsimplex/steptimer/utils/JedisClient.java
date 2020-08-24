@@ -19,8 +19,13 @@ public class JedisClient {
     private static String url = "redis://:"+password+"@"+host+":"+port+"/"+dbName;
     private static Jedis jedis  = new Jedis(url);
 
-    public static Jedis getJedis(){
+
+    public static synchronized Jedis getJedis(){
+
         try{
+//            jedis.disconnect();//jedis is not threadsafe, so we are creating a new connection to avoid concurrency issues
+//            Thread.sleep(10);//give a break before reconnecting
+//            jedis = new Jedis(url);
             jedis.ping();
         }
 
@@ -30,7 +35,7 @@ public class JedisClient {
     return jedis;
     }
 
-    public void set(String key, String value) throws Exception{
+    public static synchronized void set(String key, String value) throws Exception{
         int tries =0;
         try{
             tries ++;
@@ -65,7 +70,7 @@ public class JedisClient {
         }
     }
 
-    public Set<String> zrange(String key, int start, int end) throws Exception{
+    public static synchronized Set<String> zrange(String key, int start, int end) throws Exception{
         int tries =0;
         try {
             tries ++;
@@ -84,7 +89,84 @@ public class JedisClient {
         }
     }
 
-    public String get(String key) throws Exception{
+    public static synchronized void zadd(String key, int score, String value) throws Exception{
+        int tries =0;
+        try {
+            tries ++;
+            jedis.zadd(key,score,value);
+        }
+
+        catch (Exception e){
+            if (tries<1000)
+            {
+                getJedis();
+                jedis.zadd(key,score,value);
+            }
+            else{
+                throw new Exception("Tried 1000 times to persist :"+value+" without success");
+            }
+        }
+    }
+
+    public static synchronized long zrem(String key, String value) throws Exception{
+        int tries =0;
+        try {
+            tries ++;
+            return jedis.zrem(key,value);
+        }
+
+        catch (Exception e){
+            if (tries<1000)
+            {
+                getJedis();
+                return jedis.zrem(key,value);
+            }
+            else{
+                throw new Exception("Tried 1000 times to remove key: "+key+" value: "+value+" without success");
+            }
+        }
+    }
+
+    public static synchronized void zremrangeByScore(String key, double start, double end) throws Exception{
+        int tries =0;
+        try {
+            tries ++;
+            jedis.zremrangeByScore(key,start,end);
+        }
+
+        catch (Exception e){
+            if (tries<1000)
+            {
+                getJedis();
+                jedis.zremrangeByScore(key,start,end);
+            }
+            else{
+                throw new Exception("Tried 1000 times to remove :"+key+" without success");
+            }
+        }
+    }
+
+    public static synchronized Long zcount(String keyName, double min, double max) throws Exception{
+        int tries =0;
+        try {
+            tries ++;
+            return getJedis().zcount(keyName,min, max);
+        }
+
+        catch (Exception e){
+            if (tries<1000)
+            {
+                getJedis();
+                return getJedis().zcount(keyName,0d,-1);
+            }
+            else{
+                throw new Exception("Tried 1000 times to zcount :"+keyName+" without success");
+            }
+        }
+
+    }
+
+    public static synchronized String get(String key) throws Exception{
         int tries = 0;
         try{
             tries ++;

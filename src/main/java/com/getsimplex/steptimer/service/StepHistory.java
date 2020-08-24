@@ -40,7 +40,7 @@ public class StepHistory {
     }
 
 
-    public static String getAllTests(String email) {
+    public static String getAllTests(String email) throws Exception{
         ArrayList<RapidStepTest> allTests = JedisData.getEntityList(RapidStepTest.class);
         Predicate<RapidStepTest> historicUserPredicate = user -> user.getCustomer().getEmail().equals(email);
 
