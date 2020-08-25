@@ -7,6 +7,7 @@ package com.getsimplex.steptimer.service;
 
 import com.getsimplex.steptimer.model.Customer;
 import com.getsimplex.steptimer.model.StartSimulation;
+import com.getsimplex.steptimer.model.StopSimulation;
 import com.getsimplex.steptimer.model.User;
 import com.getsimplex.steptimer.utils.*;
 import spark.Request;
@@ -39,6 +40,8 @@ public class WebAppRunner {
         //post("/generateHistoricalGraph", (req, res)->routePdfRequest(req, res));
         //get("/readPdf", (req, res)->routePdfRequest(req, res));
         post("/user", (req, res)-> callUserDatabase(req));
+        post("/simulation", (req, res)-> MessageIntake.route(new StartSimulation(30)));
+        delete("simulation", (req, res)-> MessageIntake.route(new StopSimulation()));
         get ("/stephistory/:customer", (req, res)-> {
             try{
                 userFilter(req, res);
@@ -194,9 +197,7 @@ public class WebAppRunner {
     }
 
     private static void startSimulationData(){
-        StartSimulation startSimulation = new StartSimulation();
-        startSimulation.setNumberOfCustomers(30);
-
+        StartSimulation startSimulation = new StartSimulation(30);
         MessageIntake.route(startSimulation);
     }
 }

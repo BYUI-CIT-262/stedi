@@ -18,35 +18,43 @@ public class SimulationDataDriver {
     private static Random random = new Random();
 
 
-    public static synchronized void generateTestCustomers(int numberOfUsers) throws Exception{
-        for (int i=0;i<numberOfUsers-1;i++){
-            Customer customer = new Customer();
-            String firstName = firstNames[random.nextInt(numberOfUsers)];
-            String lastName = lastNames[random.nextInt(numberOfUsers)];
-            customer.setCustomerName(firstName+" "+lastName);
-            customer.setEmail(firstName+"."+lastName+"@test.com");
-            customer.setPhone("8015551212");
-            customer.setBirthDay("01/01/1920");
-            CreateNewCustomer.createCustomer(customer);
-            testCustomers.add(customer);
-        }
-    }
-
-    public static synchronized void createRapidStepTests() throws Exception{
-        while(true){
-            for (Customer testCustomer:testCustomers){
-                long randomChange=random.nextInt(60);//negative offset (in seconds) from 2 minute test time
-                long testTime = (120-randomChange)*1000;//test time (in milliseconds)
-                RapidStepTest rapidStepTest = new RapidStepTest();
-                rapidStepTest.setCustomer(testCustomer);
-                rapidStepTest.setStopTime(System.currentTimeMillis());
-                rapidStepTest.setStartTime(rapidStepTest.getStopTime()-testTime);
-                rapidStepTest.setTestTime(testTime);
-                rapidStepTest.setTotalSteps(30);
-                JedisData.loadToJedis(rapidStepTest, RapidStepTest.class);
-                Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
-
+    public static synchronized void generateTestCustomers(int numberOfUsers) {
+        if (testCustomers.size()==0) {//this should only happen once
+            for (int i = 0; i < numberOfUsers - 1; i++) {
+                try {
+                    Customer customer = new Customer();
+                    String firstName = firstNames[random.nextInt(numberOfUsers)];
+                    String lastName = lastNames[random.nextInt(numberOfUsers)];
+                    customer.setCustomerName(firstName + " " + lastName);
+                    customer.setEmail(firstName + "." + lastName + "@test.com");
+                    customer.setPhone("8015551212");
+                    customer.setBirthDay("01/01/1920");
+                    CreateNewCustomer.createCustomer(customer);
+                    testCustomers.add(customer);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }
+
+    public static synchronized void createRapidStepTests() {
+        for (Customer testCustomer:testCustomers){
+             try {
+                 long randomChange = random.nextInt(60);//negative offset (in seconds) from 2 minute test time
+                 long testTime = (120 - randomChange) * 1000;//test time (in milliseconds)
+                 RapidStepTest rapidStepTest = new RapidStepTest();
+                 rapidStepTest.setCustomer(testCustomer);
+                 rapidStepTest.setStopTime(System.currentTimeMillis());
+                 rapidStepTest.setStartTime(rapidStepTest.getStopTime() - testTime);
+                 rapidStepTest.setTestTime(testTime);
+                 rapidStepTest.setTotalSteps(30);
+                 JedisData.loadToJedis(rapidStepTest, RapidStepTest.class);
+                 Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
+             } catch (Exception e){
+                 System.out.println(e.getMessage());
+             }
+        }
+    }
+
 }

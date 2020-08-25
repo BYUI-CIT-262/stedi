@@ -82,7 +82,7 @@ public class MessageRouteByType extends UntypedActor {
 
         } else if (object instanceof DeviceMessage){
             deviceRouter.tell(object, self());
-        } else if (object instanceof StartSimulation){
+        } else if (object instanceof StartSimulation || object instanceof StopSimulation || object instanceof ContinueSimulation){
             simulationActor.tell(object, self());
         }
     }

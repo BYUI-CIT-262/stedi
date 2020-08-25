@@ -4,6 +4,10 @@ public class StartSimulation {
 
     private int numberOfCustomers;
 
+    public StartSimulation(int numberOfCustomers){
+        this.numberOfCustomers=numberOfCustomers;
+    }
+
     public int getNumberOfCustomers() {
         return numberOfCustomers;
     }
