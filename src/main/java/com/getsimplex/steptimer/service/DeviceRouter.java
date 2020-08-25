@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class DeviceRouter extends UntypedActor {
     private static Logger logger = Logger.getLogger(DeviceRouter.class.getName());
-    private static HashMap<String, Session> deviceRegistry = new HashMap<String, Session>();
+    private static HashMap<String, Session> deviceRegistry = new HashMap<String, Session>();//this is for the websocket to show the user the activity for the unique device
     private static HashMap<String,ActorRef> uniqueDeviceListeners = new HashMap<String, ActorRef>();
     private long lastMessageDate = 0l;	
 

@@ -23,7 +23,7 @@ public class MessageRouteByType extends UntypedActor {
     private static Logger logger = Logger.getLogger(MessageRouteByType.class.getName());
     private ActorRef deviceRouter = getContext().actorOf(new RoundRobinPool(1).props(Props.create(DeviceRouter.class)));//a pool of one means that only one actor is running at any moment and if it crashes, the actor restarts
     private ActorRef browserRouter = getContext().actorOf(new RoundRobinPool(1).props(Props.create(BrowserRouter.class)));//a pool of one means that only one actor is running at any moment and if it crashes, the actor restarts
-
+    private ActorRef simulationActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(SimulationActor.class)));
 
     public void onReceive(Object object){
         if (object instanceof SessionMessageResponse){
@@ -82,6 +82,8 @@ public class MessageRouteByType extends UntypedActor {
 
         } else if (object instanceof DeviceMessage){
             deviceRouter.tell(object, self());
+        } else if (object instanceof StartSimulation){
+            simulationActor.tell(object, self());
         }
     }
 }

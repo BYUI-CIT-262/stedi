@@ -6,6 +6,7 @@ package com.getsimplex.steptimer.service;
 
 
 import com.getsimplex.steptimer.model.Customer;
+import com.getsimplex.steptimer.model.StartSimulation;
 import com.getsimplex.steptimer.model.User;
 import com.getsimplex.steptimer.utils.*;
 import spark.Request;
@@ -25,6 +26,11 @@ public class WebAppRunner {
         createTestUser();
 
         createTestCustomer();
+
+        if ("true".equals(System.getProperty("simulation"))){
+            startSimulationData();
+        }
+
 
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
         staticFileLocation("/public");
@@ -185,5 +191,12 @@ public class WebAppRunner {
         catch (Exception e){
             System.out.println("Unable to create customer due to exception: "+e.getMessage());
         }
+    }
+
+    private static void startSimulationData(){
+        StartSimulation startSimulation = new StartSimulation();
+        startSimulation.setNumberOfCustomers(30);
+
+        MessageIntake.route(startSimulation);
     }
 }
