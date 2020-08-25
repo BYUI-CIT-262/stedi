@@ -23,9 +23,6 @@ public class JedisClient {
     public static synchronized Jedis getJedis(){
 
         try{
-//            jedis.disconnect();//jedis is not threadsafe, so we are creating a new connection to avoid concurrency issues
-//            Thread.sleep(10);//give a break before reconnecting
-//            jedis = new Jedis(url);
             jedis.ping();
         }
 
@@ -50,7 +47,7 @@ public class JedisClient {
         }
     }
 
-    public  Boolean exists(String key) throws Exception{
+    public static synchronized Boolean exists(String key) throws Exception{
         int tries =0;
         try{
             tries++;
