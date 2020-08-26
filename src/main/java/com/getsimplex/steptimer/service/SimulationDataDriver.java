@@ -1,9 +1,12 @@
 package com.getsimplex.steptimer.service;
 
 import com.getsimplex.steptimer.model.Customer;
+import com.getsimplex.steptimer.model.DeviceMessage;
 import com.getsimplex.steptimer.model.RapidStepTest;
 import com.getsimplex.steptimer.model.User;
 import com.getsimplex.steptimer.utils.JedisData;
+import com.google.gson.Gson;
+import org.eclipse.jetty.websocket.api.Session;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -16,7 +19,12 @@ public class SimulationDataDriver {
     private static String[] firstNames = {"Sarah", "Bobby", "Frank", "Edward", "Danny", "Chris", "Spencer", "Ashley", "Santosh", "Senthil", "Christina", "Suresh", "Neeraj", "Angie", "Sean", "Lyn", "John", "Ben", "Travis", "David", "Larry", "Jerry", "Gail", "Craig", "Dan", "Jason", "Eric", "Trevor", "Jane", "Jacob", "Jaya", "Manoj", "Liz", "Christina"};
     private static List<Customer> testCustomers = new ArrayList<Customer>();
     private static Random random = new Random();
+    private static Gson gson = new Gson();
+    private static Session remoteSession;
 
+    public static synchronized void setRemoteSession(Session session){
+        remoteSession=session;
+    }
 
     public static synchronized void generateTestCustomers(int numberOfUsers) {
         if (testCustomers.size()==0) {//this should only happen once
@@ -50,6 +58,11 @@ public class SimulationDataDriver {
                  rapidStepTest.setTestTime(testTime);
                  rapidStepTest.setTotalSteps(30);
                  JedisData.loadToJedis(rapidStepTest, RapidStepTest.class);
+                 DeviceMessage deviceMessage = new DeviceMessage();
+                 deviceMessage.setDate(System.currentTimeMillis());
+                 deviceMessage.setDeviceId("1234");//this is just a device id used for testing
+                 deviceMessage.setMessage(gson.toJson(rapidStepTest));
+                 MessageIntake.route(deviceMessage);
                  Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
              } catch (Exception e){
                  System.out.println(e.getMessage());

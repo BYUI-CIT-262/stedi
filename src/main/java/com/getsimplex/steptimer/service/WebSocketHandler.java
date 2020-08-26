@@ -1,8 +1,6 @@
 package com.getsimplex.steptimer.service;
 
-import com.getsimplex.steptimer.model.MessageSourceTypes;
-import com.getsimplex.steptimer.model.SessionMessageResponse;
-import com.getsimplex.steptimer.model.ValidationResponse;
+import com.getsimplex.steptimer.model.*;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -30,20 +28,30 @@ public class WebSocketHandler {
 
     @OnWebSocketConnect
     public void onConnect(Session session) throws Exception{
-
+        DeviceInterest deviceInterest = new DeviceInterest();
+        deviceInterest.setDeviceId("1234");//this is just a default device id used for testing
+        deviceInterest.setInterestedSession(session);
+        deviceInterest.setInterestedUser("clinicmanager");
+        MessageIntake.route(deviceInterest);//this should make it so new messages from Kafka for device 1234 go to this user's websocket
 
     }
 
     @OnWebSocketClose
     public void onClose(Session session, int code, String message){
-        String shortMessage = "StopReading~";
-        SessionMessageResponse sessionMessage = new SessionMessageResponse();
-        sessionMessage.message=shortMessage;
-        sessionMessage.session=session;
-        ValidationResponse validationResponse = new ValidationResponse();
-        validationResponse.setOriginType(MessageSourceTypes.SERVICE);
-        sessionMessage.validationResponse=validationResponse;
-        MessageIntake.route(sessionMessage);
+//        String shortMessage = "StopReading~";
+//        SessionMessageResponse sessionMessage = new SessionMessageResponse();
+//        sessionMessage.message=shortMessage;
+//        sessionMessage.session=session;
+//        ValidationResponse validationResponse = new ValidationResponse();
+//        validationResponse.setOriginType(MessageSourceTypes.SERVICE);
+//        sessionMessage.validationResponse=validationResponse;
+//        MessageIntake.route(sessionMessage);
+
+        DeviceInterestEnded deviceInterestEnded = new DeviceInterestEnded();
+        deviceInterestEnded.setDeviceId("1234");
+        deviceInterestEnded.setInterestedSession(session);
+        deviceInterestEnded.setInterestedUser("clinicmanager");
+        MessageIntake.route(deviceInterestEnded);// this should prevent trying to send updates to a closed socket
     }
 
     @OnWebSocketMessage

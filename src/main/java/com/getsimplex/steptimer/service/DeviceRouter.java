@@ -29,8 +29,7 @@ public class DeviceRouter extends UntypedActor {
             DeviceMessage deviceMessage = (DeviceMessage) object;		
             logger.info("DeviceRouter received payload: "+deviceMessage.getMessage()+" with timestamp: "+deviceMessage.getDate());
             try {
-                if ((deviceMessage.getDate()-lastMessageDate>600) && deviceRegistry.containsKey(deviceMessage.getDeviceId())){//cancel out noise -- usually extra steps that aren't real happen within 500 milliseconds, but longer than that and it's real
-                    //getDeviceListener(deviceMessage.getDeviceId()).tell(object,self());
+                if (deviceRegistry.containsKey(deviceMessage.getDeviceId())){
                     deviceRegistry.get(deviceMessage.getDeviceId()).getRemote().sendString(deviceMessage.getMessage());
                 }
             } catch (Exception e){

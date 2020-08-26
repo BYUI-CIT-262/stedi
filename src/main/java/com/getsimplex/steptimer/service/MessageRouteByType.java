@@ -26,7 +26,11 @@ public class MessageRouteByType extends UntypedActor {
     private ActorRef simulationActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(SimulationActor.class)));
 
     public void onReceive(Object object){
-        if (object instanceof SessionMessageResponse){
+
+        if (object instanceof DeviceInterest){
+            deviceRouter.tell(object, self());
+        }
+        else if (object instanceof SessionMessageResponse){
             SessionMessageResponse sessionMessage = (SessionMessageResponse) object;
 
             Session session = sessionMessage.session;
