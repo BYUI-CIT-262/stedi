@@ -7,6 +7,8 @@ public class CustomerRisk {
     private String customer;
     private Float score;
     private Date riskDate;
+    private Date riskDateLong;
+
 
     public String getCustomer() {
         return customer;
@@ -30,5 +32,13 @@ public class CustomerRisk {
 
     public void setRiskDate(Date riskDate) {
         this.riskDate = riskDate;
+    }
+
+    public Date getRiskDateLong() {
+        return riskDateLong;
+    }
+
+    public void setRiskDateLong(Date riskDateLong) {
+        this.riskDateLong = riskDateLong;
     }
 }
