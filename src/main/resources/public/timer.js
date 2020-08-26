@@ -31,6 +31,28 @@
         }
     };
 
+    var simulationUpdate = (object) => {
+        if ($(object).is(":checked")){
+          $.ajax({
+              type: 'POST',
+              url: '/simulation',
+              success: function(data) {
+              },
+              headers: { "suresteps.session.token": localStorage.getItem("token")},
+              contentType: "application/text",
+              dataType: 'text'
+          });
+        } else{
+          $.ajax({
+              type: 'DELETE',
+              url: '/simulation',
+              success: function(data) {
+              },
+              headers: { "suresteps.session.token": localStorage.getItem("token")},
+              contentType: "application/text",
+              dataType: 'text'
+          });        }
+    }
 
     var saveRapidStepTest = (rapidStepTest) => {
         $.ajax({
