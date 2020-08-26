@@ -9,6 +9,7 @@ import com.getsimplex.steptimer.utils.JedisData;
 import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  * Created by .
  */
 public class StepHistory {
-
+    private static Logger logger = Logger.getLogger(StepHistory.class.getName());
     private static Gson gson = GsonFactory.getGson();
 
     public static String saveSensorTail(Request request) throws Exception{
@@ -49,7 +50,7 @@ public class StepHistory {
     }
 
     public static String riskScore(String email) throws Exception{
-        System.out.println("Received score request");
+        logger.info("Received score request for: "+email);
         ArrayList<RapidStepTest> allTests = JedisData.getEntityList(RapidStepTest.class);
         Predicate<RapidStepTest> historicUserPredicate = stepTest -> stepTest.getCustomer().getEmail().equals(email);
 
@@ -72,7 +73,12 @@ public class StepHistory {
         //positive means they have improved
         //negative means they have declined
 
-        System.out.println("Score: "+riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString());
+        CustomerRisk customerRisk = new CustomerRisk();
+        customerRisk.setScore(new Float(riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString()));
+        customerRisk.setCustomer(email);
+        customerRisk.setRiskDate(new Date(mostRecentTest.getStopTime()));
+
+        logger.info("Customer Risk: "+gson.toJson(customerRisk));
         return riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString();//score of magnitude 10 or larger means significant change in risk
     }
 
