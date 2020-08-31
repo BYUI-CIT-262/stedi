@@ -22,6 +22,7 @@ public class SimulationActor extends UntypedActor {
             StartSimulation startSimulation = (StartSimulation) object;
             logger.info("SimulationActor received StartSimulationMessage to start simulation for: "+startSimulation.getNumberOfCustomers()+" test customers");
             try{
+                SimulationDataDriver.setSimulationActive(true);
                 logger.info("Creating test customers...");
                 SimulationDataDriver.generateTestCustomers(startSimulation.getNumberOfCustomers());
                 logger.info("Starting infinite loop for test data");
@@ -32,11 +33,13 @@ public class SimulationActor extends UntypedActor {
             }
         } else if (object instanceof StopSimulation){
             stop = true;//any subsequent messages to continue will be ignored until we are told to start again
+            SimulationDataDriver.setSimulationActive(false);
             logger.info("Received request to stop simulation, stopping until further notice...");
         }
         else if (object instanceof ContinueSimulation && !stop){
             try {
                 logger.info("Adding more test data...");
+                SimulationDataDriver.setSimulationActive(true);
                 SimulationDataDriver.createRapidStepTests();
                 self().tell(new ContinueSimulation(), self());//continue simulation
             } catch (Exception e){

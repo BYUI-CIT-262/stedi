@@ -40,8 +40,11 @@ public class WebAppRunner {
         //post("/generateHistoricalGraph", (req, res)->routePdfRequest(req, res));
         //get("/readPdf", (req, res)->routePdfRequest(req, res));
         post("/user", (req, res)-> callUserDatabase(req));
+
+        get("/simulation", (req, res) -> SimulationDataDriver.getSimulationActive());
         post("/simulation", (req, res)-> MessageIntake.route(new StartSimulation(30)));
-        delete("simulation", (req, res)-> MessageIntake.route(new StopSimulation()));
+        delete("/simulation", (req, res)-> MessageIntake.route(new StopSimulation()));
+
         get ("/stephistory/:customer", (req, res)-> {
             try{
                 userFilter(req, res);
@@ -78,7 +81,7 @@ public class WebAppRunner {
             try{
                 userFilter(req, res);
             } catch (Exception e){
-                return "/";
+                res.status(401);
             }
 
             saveStepSession(req);
@@ -88,6 +91,7 @@ public class WebAppRunner {
             try{
                 userFilter(req, res);
             } catch (Exception e){
+                res.status(401);
                 System.out.println("*** Error Finding Risk Score: "+e.getMessage());
                 throw e;
             }

@@ -21,6 +21,15 @@ public class SimulationDataDriver {
     private static Random random = new Random();
     private static Gson gson = new Gson();
     private static Session remoteSession;
+    private static boolean simulationActive = false;
+
+    public static synchronized void setSimulationActive(boolean active){
+        simulationActive= active;
+    }
+
+    public static synchronized  boolean getSimulationActive(){
+        return simulationActive;
+    }
 
     public static synchronized void setRemoteSession(Session session){
         remoteSession=session;
@@ -46,7 +55,7 @@ public class SimulationDataDriver {
         }
     }
 
-    public static synchronized void createRapidStepTests() {
+    public static void createRapidStepTests() {
         for (Customer testCustomer:testCustomers){
              try {
                  long randomChange = random.nextInt(60);//negative offset (in seconds) from 2 minute test time

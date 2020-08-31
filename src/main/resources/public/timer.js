@@ -31,12 +31,39 @@
         }
     };
 
+    var fetchToggleState = () => {
+
+        var headers = { "suresteps.session.token": localStorage.getItem("token")};
+        $.ajax({
+            type: 'GET',
+            url: '/simulation',
+            contentType: 'application/text',
+            dataType: 'text',
+            headers: headers,
+            statusCode: {
+                200: (simulationActive) => {
+                    var active = JSON.parse(simulationActive);
+
+                    if (active === true){
+                        $('#enablesimulationcheckbox').prop('checked', true);
+                    } else{
+                        $('#enablesimulationcheckbox').prop('checked', false);
+                    }
+                },
+                401: () => window.location.href="/",
+            },
+        });
+
+    }
+
+    // this function is called when the toggle is activated/de-activated to enable simulated user traffic
     var simulationUpdate = (object) => {
         if ($(object).is(":checked")){
           $.ajax({
               type: 'POST',
               url: '/simulation',
-              success: function(data) {
+              statusCode:{
+                    401: () => window.location.href="/",
               },
               headers: { "suresteps.session.token": localStorage.getItem("token")},
               contentType: "application/text",
@@ -46,7 +73,8 @@
           $.ajax({
               type: 'DELETE',
               url: '/simulation',
-              success: function(data) {
+              statusCode:{
+                401: () => window.location.href="/",
               },
               headers: { "suresteps.session.token": localStorage.getItem("token")},
               contentType: "application/text",
@@ -59,8 +87,8 @@
             type: 'POST',
             url: '/rapidsteptest',
             data: JSON.stringify(rapidStepTest), // or JSON.stringify ({name: 'jonas'}),
-            success: function(data) {
-
+            statusCode:{
+                401: () => window.location.href="/",
             },
             headers: { "suresteps.session.token": localStorage.getItem("token")},
             contentType: "application/text",
@@ -197,3 +225,5 @@
         second = second - 60 * minute + '';
         return minute + ':' + second + ':' + decisec;
     }
+
+    fetchToggleState();
