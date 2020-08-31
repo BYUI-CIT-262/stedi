@@ -18,13 +18,13 @@ import java.util.logging.Logger;
 /**
  * Created by sean on 8/10/2016.
  */
-@WebSocket
-public class WebSocketHandler {
+@WebSocket()
+public class DeviceWebSocketHandler {
 
     private static Gson gson = new Gson();
     private static Type stringStringMap = new TypeToken<Map<String, String>>(){}.getType();
     public static String TOKEN_KEY= "userToken";
-    private static Logger logger = Logger.getLogger(WebSocketHandler.class.getName());
+    private static Logger logger = Logger.getLogger(DeviceWebSocketHandler.class.getName());
 
     @OnWebSocketConnect
     public void onConnect(Session session) throws Exception{

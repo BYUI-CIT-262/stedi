@@ -35,7 +35,8 @@ public class WebAppRunner {
 
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
         staticFileLocation("/public");
-        webSocket("/socket", WebSocketHandler.class);
+        webSocket("/socket", DeviceWebSocketHandler.class);
+        webSocket("/timeruiwebsocket", TimerUIWebSocket.class);
         //post("/sensorUpdates", (req, res)-> WebServiceHandler.routeDeviceRequest(req));
         //post("/generateHistoricalGraph", (req, res)->routePdfRequest(req, res));
         //get("/readPdf", (req, res)->routePdfRequest(req, res));

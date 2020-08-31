@@ -42,7 +42,10 @@ public class DeviceRouter extends UntypedActor {
             if(!deviceRegistry.containsKey(deviceInterest.getDeviceId())){
                 deviceRegistry.put(deviceInterest.getDeviceId(),deviceInterest.getInterestedSession());
             } else {
+                deviceRegistry.get(deviceInterest.getDeviceId()).close();//we are moving to a different subscriber
                 logger.info("Device: "+deviceInterest.getDeviceId()+" is already being monitored.");
+                logger.info("Moving interest in Device: "+deviceInterest.getDeviceId()+"  as per latest request.");
+                deviceRegistry.put(deviceInterest.getDeviceId(),deviceInterest.getInterestedSession());
             }
         } else if (object instanceof DeviceInterestEnded){
             DeviceInterestEnded deviceInterestEnded = (DeviceInterestEnded) object;
