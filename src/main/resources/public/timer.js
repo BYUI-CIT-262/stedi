@@ -110,7 +110,8 @@
             type: 'GET',
             url: '/riskscore/'+customer.email,
             success: function(data) {
-                document.getElementById('score').innerHTML = data;
+                var customerRisk = JSON.parse(data);
+                document.getElementById('score').innerHTML = customerRisk.score;
             },
             headers: { "suresteps.session.token": localStorage.getItem("token")},
             contentType: "application/text",

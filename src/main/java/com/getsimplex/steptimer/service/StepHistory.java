@@ -51,12 +51,18 @@ public class StepHistory {
 
     public static String riskScore(String email) throws Exception{
         logger.info("Received score request for: "+email);
+        Optional<Customer> customer = FindCustomer.findCustomer(email);
+
+        if (!customer.isPresent()){
+            throw new Exception ("Unable to score risk for non-existent customer: "+email);
+        }
+
         ArrayList<RapidStepTest> allTests = JedisData.getEntityList(RapidStepTest.class);
         Predicate<RapidStepTest> historicUserPredicate = stepTest -> stepTest.getCustomer().getEmail().equals(email);
 
         List<RapidStepTest> rapidStepTestsSortedByDate = allTests.stream().filter(historicUserPredicate).sorted(Comparator.comparing(RapidStepTest::getStartTime)).collect(Collectors.toList());
         if (rapidStepTestsSortedByDate.size()<4){
-            throw new Exception("Customer "+email+" has: "+rapidStepTestsSortedByDate.size()+" rapid step tests on file which is less than the required number(2) to calculate fall risk.");
+            throw new Exception("Customer "+email+" has: "+rapidStepTestsSortedByDate.size()+" rapid step tests on file which is less than the required number(4) to calculate fall risk.");
         }
 
         RapidStepTest mostRecentTest = rapidStepTestsSortedByDate.get(rapidStepTestsSortedByDate.size()-1);
@@ -73,13 +79,18 @@ public class StepHistory {
         //positive means they have improved
         //negative means they have declined
 
+        Integer birthYear = Integer.valueOf(customer.get().getBirthDay().split("/")[2]);
+
         CustomerRisk customerRisk = new CustomerRisk();
         customerRisk.setScore(new Float(riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString()));
         customerRisk.setCustomer(email);
         customerRisk.setRiskDate(new Date(mostRecentTest.getStopTime()));
+        customerRisk.setBirthYear(birthYear);
 
-        logger.info("Customer Risk: "+gson.toJson(customerRisk));
-        return riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString();//score of magnitude 10 or larger means significant change in risk
+        logger.info("Risk for customer: "+email+" "+gson.toJson(customerRisk));
+        return gson.toJson(customerRisk);
     }
+
+
 
 }

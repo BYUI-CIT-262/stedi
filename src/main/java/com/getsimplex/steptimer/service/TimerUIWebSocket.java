@@ -15,7 +15,7 @@ public class TimerUIWebSocket {
     @OnWebSocketConnect
     public void onConnect(Session session){
         DeviceInterest deviceInterest = new DeviceInterest();
-        deviceInterest.setDeviceId(session.getRemoteAddress().getHostString());
+        deviceInterest.setDeviceId(session.getRemoteAddress().getHostString());//this message will be unique for this user, and will keep their Timer sessions limited to 1
         deviceInterest.setInterestedSession(session);
         deviceInterest.setInterestedUser("clinicmanager");
         MessageIntake.route(deviceInterest);//notify Device Actor of a listening device

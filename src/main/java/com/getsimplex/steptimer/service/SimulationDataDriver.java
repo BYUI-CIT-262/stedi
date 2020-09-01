@@ -3,15 +3,11 @@ package com.getsimplex.steptimer.service;
 import com.getsimplex.steptimer.model.Customer;
 import com.getsimplex.steptimer.model.DeviceMessage;
 import com.getsimplex.steptimer.model.RapidStepTest;
-import com.getsimplex.steptimer.model.User;
 import com.getsimplex.steptimer.utils.JedisData;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class SimulationDataDriver {
 
@@ -22,6 +18,12 @@ public class SimulationDataDriver {
     private static Gson gson = new Gson();
     private static Session remoteSession;
     private static boolean simulationActive = false;
+    private static Map<String, Long> mostRecentTestTime = new HashMap<String, Long>();
+    private static boolean solutionActive = false;
+
+    static {
+        solutionActive = Boolean.valueOf(System.getProperty("solutionActive"));//this makes it like the Spark app is sending messages (only for teacher use)
+    }
 
     public static synchronized void setSimulationActive(boolean active){
         simulationActive= active;
@@ -37,6 +39,7 @@ public class SimulationDataDriver {
 
     public static synchronized void generateTestCustomers(int numberOfUsers) {
         if (testCustomers.size()==0) {//this should only happen once
+            int nextCustomerAge = 55;
             for (int i = 0; i < numberOfUsers - 1; i++) {
                 try {
                     Customer customer = new Customer();
@@ -45,7 +48,7 @@ public class SimulationDataDriver {
                     customer.setCustomerName(firstName + " " + lastName);
                     customer.setEmail(firstName + "." + lastName + "@test.com");
                     customer.setPhone("8015551212");
-                    customer.setBirthDay("01/01/1920");
+                    customer.setBirthDay("01/01/"+(2020-nextCustomerAge++));//spread age out evenly
                     CreateNewCustomer.createCustomer(customer);
                     testCustomers.add(customer);
                 } catch (Exception e) {
@@ -58,8 +61,29 @@ public class SimulationDataDriver {
     public static void createRapidStepTests() {
         for (Customer testCustomer:testCustomers){
              try {
-                 long randomChange = random.nextInt(60);//negative offset (in seconds) from 2 minute test time
-                 long testTime = (120 - randomChange) * 1000;//test time (in milliseconds)
+                 long randomChange;
+                 long testTime;
+                 Integer birthYear = Integer.valueOf(testCustomer.getBirthDay().split("/")[2]);
+                 Optional<Long> previousTestTime= Optional.empty();
+                 if (mostRecentTestTime.containsKey(testCustomer.getCustomerName())){
+                     previousTestTime=Optional.of(mostRecentTestTime.get(testCustomer.getCustomerName()));
+                 }
+
+                 if (!previousTestTime.isPresent()){//create their first score
+                     randomChange = random.nextInt(60);//negative offset (in seconds) from 2 minute test time
+                     testTime = (120 - randomChange) * 1000;//test time (in milliseconds)
+                 } else{
+                    if ( birthYear>=1950 && birthYear <=1960 ){
+                        randomChange = random.nextInt(4);//simulate deteriorating change of 1-4 seconds
+                        testTime = previousTestTime.get() + (randomChange*1000);
+                    } else {
+                        randomChange = random.nextInt(60);//random variation (in seconds) from arbitrary 2 minutes (test time)
+                        testTime = (120 - randomChange) * 1000;//test time (in milliseconds)
+                    }
+                 }
+
+                 mostRecentTestTime.put(testCustomer.getCustomerName(), testTime);
+
                  RapidStepTest rapidStepTest = new RapidStepTest();
                  rapidStepTest.setCustomer(testCustomer);
                  rapidStepTest.setStopTime(System.currentTimeMillis());
@@ -67,12 +91,20 @@ public class SimulationDataDriver {
                  rapidStepTest.setTestTime(testTime);
                  rapidStepTest.setTotalSteps(30);
                  JedisData.loadToJedis(rapidStepTest, RapidStepTest.class);
-                 DeviceMessage deviceMessage = new DeviceMessage();
-                 deviceMessage.setDate(System.currentTimeMillis());
-                 deviceMessage.setDeviceId("1234");//this is just a device id used for testing
-                 deviceMessage.setMessage(gson.toJson(rapidStepTest));
-                 MessageIntake.route(deviceMessage);
                  Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
+                 if (solutionActive) {//this is directly simulating the messages that will be coming from Kafka when solved
+                     try {
+                         String riskScoreJson = StepHistory.riskScore(testCustomer.getEmail());//this is logged, and we don't actually need it right here, we just want it to be visible for logging purposes
+                         DeviceMessage deviceMessage = new DeviceMessage();
+                         deviceMessage.setDate(System.currentTimeMillis());
+                         deviceMessage.setDeviceId("1234");//this is just a device id used for testing
+                         deviceMessage.setMessage(riskScoreJson);
+                         MessageIntake.route(deviceMessage);
+
+                     } catch (Exception e) {
+                         System.out.println("Error retrieving risk score for customer: " + e.getMessage());
+                     }
+                 }
              } catch (Exception e){
                  System.out.println(e.getMessage());
              }
