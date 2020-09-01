@@ -19,6 +19,12 @@ import java.util.stream.Collectors;
 public class StepHistory {
     private static Logger logger = Logger.getLogger(StepHistory.class.getName());
     private static Gson gson = GsonFactory.getGson();
+    private static boolean solutionActive = false;
+
+    static {
+        solutionActive = Boolean.valueOf(System.getProperty("solutionActive"));//this makes it like the Spark app is sending messages (only for teacher use)
+    }
+
 
     public static String saveSensorTail(Request request) throws Exception{
         String tokenString = request.headers("suresteps.session.token");
@@ -79,13 +85,16 @@ public class StepHistory {
         //positive means they have improved
         //negative means they have declined
 
-        Integer birthYear = Integer.valueOf(customer.get().getBirthDay().split("/")[2]);
+        Integer birthYear = Integer.valueOf(customer.get().getBirthDay().split("-")[0]);
 
         CustomerRisk customerRisk = new CustomerRisk();
         customerRisk.setScore(new Float(riskScore.setScale(2, BigDecimal.ROUND_HALF_UP).toString()));
         customerRisk.setCustomer(email);
         customerRisk.setRiskDate(new Date(mostRecentTest.getStopTime()));
-        customerRisk.setBirthYear(birthYear);
+
+        if (solutionActive) {//we don't want this data to be visible if the student is working on retrieving it from redis
+            customerRisk.setBirthYear(birthYear);
+        }
 
         logger.info("Risk for customer: "+email+" "+gson.toJson(customerRisk));
         return gson.toJson(customerRisk);

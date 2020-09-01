@@ -10,6 +10,10 @@ var scatterChartData = {
         borderColor: 'rgb(255, 99, 132)',
         backgroundColor: 'rgb(255,255,255)',
         data:riskScoresByAge,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+        }
     }]
 };
 

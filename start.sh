@@ -1,0 +1,1 @@
+java -Xdebug -Xrunjdwp:transport=dt_socket,address=8000,server=y,suspend=y -Dconfig=/etc/stedi/application.conf -DsolutionActive=true -jar target/StepTimerWebsocket-1.0-SNAPSHOT.jar > /tmp/stedi.log 2>&1 &

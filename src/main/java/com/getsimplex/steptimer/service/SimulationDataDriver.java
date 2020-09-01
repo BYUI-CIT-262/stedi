@@ -48,7 +48,7 @@ public class SimulationDataDriver {
                     customer.setCustomerName(firstName + " " + lastName);
                     customer.setEmail(firstName + "." + lastName + "@test.com");
                     customer.setPhone("8015551212");
-                    customer.setBirthDay("01/01/"+(2020-nextCustomerAge++));//spread age out evenly
+                    customer.setBirthDay((2020-nextCustomerAge++)+"-01-01");//spread age out evenly
                     CreateNewCustomer.createCustomer(customer);
                     testCustomers.add(customer);
                 } catch (Exception e) {
@@ -63,7 +63,7 @@ public class SimulationDataDriver {
              try {
                  long randomChange;
                  long testTime;
-                 Integer birthYear = Integer.valueOf(testCustomer.getBirthDay().split("/")[2]);
+                 Integer birthYear = Integer.valueOf(testCustomer.getBirthDay().split("-")[0]);
                  Optional<Long> previousTestTime= Optional.empty();
                  if (mostRecentTestTime.containsKey(testCustomer.getCustomerName())){
                      previousTestTime=Optional.of(mostRecentTestTime.get(testCustomer.getCustomerName()));

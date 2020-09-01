@@ -5,10 +5,7 @@ package com.getsimplex.steptimer.service;
  */
 
 
-import com.getsimplex.steptimer.model.Customer;
-import com.getsimplex.steptimer.model.StartSimulation;
-import com.getsimplex.steptimer.model.StopSimulation;
-import com.getsimplex.steptimer.model.User;
+import com.getsimplex.steptimer.model.*;
 import com.getsimplex.steptimer.utils.*;
 import spark.Request;
 import spark.Response;
@@ -21,6 +18,8 @@ import static spark.Spark.*;
 public class WebAppRunner {
 
     public static void main(String[] args){
+
+        MessageIntake.route(new StartKafka());//connect to customer-risk topic
 
         Spark.port(getHerokuAssignedPort());
 
