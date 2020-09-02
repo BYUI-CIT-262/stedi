@@ -92,9 +92,10 @@ public class SimulationDataDriver {
                  rapidStepTest.setTotalSteps(30);
                  JedisData.loadToJedis(rapidStepTest, RapidStepTest.class);
                  Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
+                 String riskScoreJson = StepHistory.riskScore(testCustomer.getEmail());//this is logged, and we don't actually need it right here, we just want it to be visible for logging purposes
+
                  if (solutionActive) {//this is directly simulating the messages that will be coming from Kafka when solved
                      try {
-                         String riskScoreJson = StepHistory.riskScore(testCustomer.getEmail());//this is logged, and we don't actually need it right here, we just want it to be visible for logging purposes
                          DeviceMessage deviceMessage = new DeviceMessage();
                          deviceMessage.setDate(System.currentTimeMillis());
                          deviceMessage.setDeviceId("1234");//this is just a device id used for testing
