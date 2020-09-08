@@ -68,11 +68,12 @@ public class WebAppRunner {
         get("/customer/:customer", (req, res)-> {
             try {
                 userFilter(req, res);
-                return FindCustomer.handleRequest(req);
             } catch (Exception e){
+                res.status(401);
                 System.out.println("*** Error Finding Customer: "+e.getMessage());
                 return null;
             }
+            return FindCustomer.handleRequest(req);
 
         });
 
@@ -114,8 +115,12 @@ public class WebAppRunner {
                 return;
             }
 
-            if (!user.isPresent() || tokenExpired.equals(true)) { //Check to see if session expired
-                throw new Exception("Invalid user token");
+            if (!user.isPresent()) { //Check to see if session expired
+                throw new Exception("Invalid user token: user not found using token: "+tokenString);
+            }
+
+            if (tokenExpired.equals(true)){
+                throw new Exception("Invalid user token: "+tokenString+" expired");
             }
 
     }

@@ -1,1 +1,1 @@
-java -Dconfig=/etc/stedi/application.conf -jar target/StepTimerWebsocket-1.0-SNAPSHOT.jar > /tmp/logs/stedi.log 2>&1 &
+java -Dconfig=/etc/stedi/application.conf -DsolutionActive=true -jar target/StepTimerWebsocket-1.0-SNAPSHOT.jar > /tmp/logs/stedi.log 2>&1 &
