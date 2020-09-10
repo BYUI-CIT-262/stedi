@@ -46,17 +46,17 @@ public class WebAppRunner {
         delete("/simulation", (req, res)-> MessageIntake.route(new StopSimulation()));
 
         get ("/stephistory/:customer", (req, res)-> {
-            try{
-                userFilter(req, res);
-            } catch (Exception e){
-                res.redirect("/");
-            }
+//            try{
+//                userFilter(req, res);
+//            } catch (Exception e){
+//                res.redirect("/");
+//            }
             return StepHistory.getAllTests(req.params(":customer"));
         });
         post("/customer", (req, res)-> {
             String newLocation;
             try {
-                userFilter(req, res);
+//                userFilter(req, res);
                 createNewCustomer(req, res);
                 newLocation="/timer.html";
             } catch (Exception e){
@@ -67,7 +67,7 @@ public class WebAppRunner {
         });
         get("/customer/:customer", (req, res)-> {
             try {
-                userFilter(req, res);
+//                userFilter(req, res);
             } catch (Exception e){
                 res.status(401);
                 System.out.println("*** Error Finding Customer: "+e.getMessage());
@@ -80,7 +80,7 @@ public class WebAppRunner {
         post("/login", (req, res)->loginUser(req));
         post("/rapidsteptest", (req, res)->{
             try{
-                userFilter(req, res);
+//                userFilter(req, res);
             } catch (Exception e){
                 res.status(401);
             }
@@ -90,7 +90,7 @@ public class WebAppRunner {
         });
         get("/riskscore/:customer",((req,res) -> {
             try{
-                userFilter(req, res);
+//                userFilter(req, res);
             } catch (Exception e){
                 res.status(401);
                 System.out.println("*** Error Finding Risk Score: "+e.getMessage());
