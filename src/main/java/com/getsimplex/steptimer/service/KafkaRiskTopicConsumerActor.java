@@ -2,18 +2,18 @@ package com.getsimplex.steptimer.service;
 
 import akka.actor.UntypedActor;
 import com.getsimplex.steptimer.model.DeviceMessage;
-import com.getsimplex.steptimer.model.StartKafka;
+import com.getsimplex.steptimer.model.StartReceivingKafkaMessages;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 
 import java.util.logging.Logger;
 
-public class KafkaRiskTopicActor extends UntypedActor {
-    private static Logger logger = Logger.getLogger(KafkaRiskTopicActor.class.getName());
+public class KafkaRiskTopicConsumerActor extends UntypedActor {
+    private static Logger logger = Logger.getLogger(KafkaRiskTopicConsumerActor.class.getName());
 
     public void onReceive(Object object){
 
-        if (object instanceof StartKafka) {
+        if (object instanceof StartReceivingKafkaMessages) {
             logger.info("Connecting to Kafka Topic: customer-risk");
             Consumer<Long, String> kafkaCustomerRiskTopic = KafkaConsumerUtil.createConsumer();
 

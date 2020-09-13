@@ -24,14 +24,18 @@ public class MessageRouteByType extends UntypedActor {
     private ActorRef deviceRouter = getContext().actorOf(new RoundRobinPool(1).props(Props.create(DeviceRouter.class)));//a pool of one means that only one actor is running at any moment and if it crashes, the actor restarts
     private ActorRef browserRouter = getContext().actorOf(new RoundRobinPool(1).props(Props.create(BrowserRouter.class)));//a pool of one means that only one actor is running at any moment and if it crashes, the actor restarts
     private ActorRef simulationActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(SimulationActor.class)));
-    private ActorRef kafkaRiskTopicActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(KafkaRiskTopicActor.class)));
+    private ActorRef kafkaRiskTopicActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(KafkaRiskTopicConsumerActor.class)));
+    private ActorRef kafkaRiskTopicProducerActor = getContext().actorOf(new RoundRobinPool(1).props(Props.create(KafkaRiskTopicProducerActor.class)));
 
     public void onReceive(Object object){
 
         if (object instanceof DeviceInterest){
             deviceRouter.tell(object, self());
         }
-        else if (object instanceof StartKafka){
+        else if (object instanceof StediEvent){
+            kafkaRiskTopicProducerActor.tell(object, self());
+        }
+        else if (object instanceof StartReceivingKafkaMessages){
             kafkaRiskTopicActor.tell(object, self());
         }
         else if (object instanceof SessionMessageResponse){

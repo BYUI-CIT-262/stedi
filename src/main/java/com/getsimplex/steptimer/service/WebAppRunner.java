@@ -19,7 +19,7 @@ public class WebAppRunner {
 
     public static void main(String[] args){
 
-        MessageIntake.route(new StartKafka());//connect to customer-risk topic
+        MessageIntake.route(new StartReceivingKafkaMessages());//connect to customer-risk topic
 
         Spark.port(getHerokuAssignedPort());
 
@@ -90,7 +90,7 @@ public class WebAppRunner {
         });
         get("/riskscore/:customer",((req,res) -> {
             try{
-//                userFilter(req, res);
+//                          userFilter(req, res);
             } catch (Exception e){
                 res.status(401);
                 System.out.println("*** Error Finding Risk Score: "+e.getMessage());

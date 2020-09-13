@@ -3,6 +3,7 @@ package com.getsimplex.steptimer.service;
 import com.getsimplex.steptimer.model.Customer;
 import com.getsimplex.steptimer.model.DeviceMessage;
 import com.getsimplex.steptimer.model.RapidStepTest;
+import com.getsimplex.steptimer.model.StediEvent;
 import com.getsimplex.steptimer.utils.JedisData;
 import com.google.gson.Gson;
 import org.eclipse.jetty.websocket.api.Session;
@@ -94,7 +95,12 @@ public class SimulationDataDriver {
                  Thread.sleep(2000);//2 seconds sleep time between each message makes a new message every minute for every customer assuming 30 test customers
                  String riskScoreJson = StepHistory.riskScore(testCustomer.getEmail());//this is logged, and we don't actually need it right here, we just want it to be visible for logging purposes
 
-                 if (solutionActive) {//this is directly simulating the messages that will be coming from Kafka when solved
+                 StediEvent event = new StediEvent();
+                 event.setMessage(riskScoreJson);
+
+                 MessageIntake.route(event);//this is where we will pick up the CustomerRisk events from outside of STEDI (like in Spark for example)
+
+                 if (solutionActive) {//this is directly simulating the messages that will be coming from Kafka (WITH the birth year) when solved
                      try {
                          DeviceMessage deviceMessage = new DeviceMessage();
                          deviceMessage.setDate(System.currentTimeMillis());
