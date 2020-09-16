@@ -33,7 +33,7 @@ public class DeviceRouter extends UntypedActor {
                     deviceRegistry.get(deviceMessage.getDeviceId()).getRemote().sendString(deviceMessage.getMessage());
                 }
             } catch (Exception e){
-                logger.severe("Unable to unmarshal message: "+deviceMessage.getMessage());
+                logger.severe("Unable to transmit to socket message: "+deviceMessage.getMessage()+ "due to: "+e.getMessage());
             }
 	    lastMessageDate = deviceMessage.getDate();//update it	
 

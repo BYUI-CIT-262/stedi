@@ -18,7 +18,7 @@ var scatterChartData = {
 };
 
 
-var webSocket  = new WebSocket("ws://"+location.hostname+":"+location.port+"/socket");
+var webSocket  = new WebSocket(`ws${location.protocol=='https:'? 's': ''}://${location.hostname}:${location.port}/socket`)
     webSocket.onmessage = event => {
         var customerRisk = JSON.parse(event.data);
 
