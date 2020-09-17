@@ -48,7 +48,7 @@ window.onload = () => {
         options: {
             title: {
                 display: true,
-                text: 'STEDI Population Risk Change by Birth Year (below zero is deterioration, greater than zero is improvement)'
+                text: 'STEDI Population Risk Change by Birth Year (below zero is improvement, greater than zero is deterioration)'
             },
         }
     });
