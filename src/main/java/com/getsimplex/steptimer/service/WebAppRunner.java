@@ -19,7 +19,10 @@ public class WebAppRunner {
 
     public static void main(String[] args){
 
+        BankingSimulationDataDriver.generateTestCustomers(30);
         MessageIntake.route(new StartReceivingKafkaMessages());//connect to customer-risk topic
+
+        MessageIntake.route(new ContinueBalanceSimulation());//balance simulation for bank account exercises
 
         Spark.port(getHerokuAssignedPort());
 

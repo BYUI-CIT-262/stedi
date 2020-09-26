@@ -9,6 +9,15 @@ public class Customer {
     private String email;
     private String phone;
     private String birthDay;
+    private String accountNumber;
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
 
     public String getCustomerName() {
         return customerName;
