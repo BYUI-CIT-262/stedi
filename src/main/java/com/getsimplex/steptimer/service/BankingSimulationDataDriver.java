@@ -1,6 +1,7 @@
 package com.getsimplex.steptimer.service;
 
 import com.getsimplex.steptimer.model.*;
+import com.getsimplex.steptimer.utils.JedisData;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -34,7 +35,11 @@ public class BankingSimulationDataDriver {
                 customer.setBirthDay((2020-nextCustomerAge++)+"-01-01");//spread age out evenly
                 customer.setLocation(locations[random.nextInt(30)]);
                 CreateNewCustomer.createCustomer(customer);
-                MessageIntake.route(customer);
+                KafkaTopicMessage customerMessage = new KafkaTopicMessage();
+                customerMessage.setTopic("bank-customers");
+                customerMessage.setKey(Long.valueOf(customer.getAccountNumber()));
+                customerMessage.setMessage(gson.toJson(customer));
+                MessageIntake.route(customerMessage);
                 testCustomers.add(customer);
             } catch (Exception e) {
                 System.out.println(e.getMessage());
@@ -103,6 +108,22 @@ public class BankingSimulationDataDriver {
                 atmTransaction.setTransactionId(transactionId);
                 atmTransaction.setTransactionDate(new Date(transactionId));//this works because the transaction id is the milliseconds of the current time/date
                 atmTransaction.setAtmLocation(testCustomer.getLocation());
+
+                if (testCustomer.getCustomerName().startsWith("A") || testCustomer.getCustomerName().startsWith("J")) {//suspicious activity
+                    atmTransaction.setAtmLocation(locations[random.nextInt(30)]);
+                } else{
+                    atmTransaction.setAtmLocation(testCustomer.getLocation());
+                }
+
+                CustomerLocation customerLocation = new CustomerLocation();
+                customerLocation.setAccountNumber(testCustomer.getAccountNumber());
+                if (testCustomer.getCustomerName().startsWith("A") || testCustomer.getCustomerName().startsWith("J")) {//traveling outside of home area
+                    customerLocation.setLocation(locations[random.nextInt(30)]);
+                } else{
+                    customerLocation.setLocation(testCustomer.getLocation());
+                }
+
+                JedisData.loadToJedis(customerLocation, CustomerLocation.class);//should create Redis events with customer location
 
                 KafkaTopicMessage atmwithdrawalMessage = new KafkaTopicMessage();
                 atmwithdrawalMessage.setTopic("atm-withdrawals");
