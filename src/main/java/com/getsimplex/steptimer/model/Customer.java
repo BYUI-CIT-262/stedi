@@ -10,6 +10,7 @@ public class Customer {
     private String phone;
     private String birthDay;
     private String accountNumber;
+    private String location;
 
     public String getAccountNumber() {
         return accountNumber;
@@ -52,4 +53,11 @@ public class Customer {
         this.birthDay = birthDay;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
