@@ -19,10 +19,17 @@ public class WebAppRunner {
 
     public static void main(String[] args){
 
-        BankingSimulationDataDriver.generateTestCustomers(30);
+        TruckingSimulationDataDriver.generateTestCustomers(30);
+        TruckingSimulationDataDriver.generateTestTrucks();
+        try{
+            TruckingSimulationDataDriver.generateTestReservations();
+        } catch (Exception e){
+            System.out.println("Unable to create Test Reservations due to: "+e.getMessage());
+        }
+
         MessageIntake.route(new StartReceivingKafkaMessages());//connect to customer-risk topic
 
-        MessageIntake.route(new ContinueBalanceSimulation());//balance simulation for bank account exercises
+        MessageIntake.route(new ContinueTruckingSimulation());//balance simulation for bank account exercises
 
         Spark.port(getHerokuAssignedPort());
 
