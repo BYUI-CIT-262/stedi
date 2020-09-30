@@ -28,14 +28,14 @@ public class TruckingSimulationDataDriver {
         for (int i = 0; i < numberOfUsers - 1; i++) {
             try {
                 Customer customer = new Customer();
-                String firstName = firstNames[random.nextInt(numberOfUsers)];
-                String lastName = lastNames[random.nextInt(numberOfUsers)];
+                String firstName = firstNames[random.nextInt(firstNames.length-1)];
+                String lastName = lastNames[random.nextInt(lastNames.length-1)];
                 customer.setCustomerName(firstName + " " + lastName);
                 customer.setEmail(firstName + "." + lastName + "@test.com");
                 customer.setPhone(String.valueOf(random.nextInt(9)+"015551212"));
                 customer.setAccountNumber(String.valueOf(String.valueOf(random.nextInt(999999999))));
                 customer.setBirthDay((2020-nextCustomerAge++)+"-01-01");//spread age out evenly
-                customer.setLocation(locations[random.nextInt(30)]);
+                customer.setLocation(locations[random.nextInt(locations.length -1)]);
                 CreateNewCustomer.createCustomer(customer);
                 testCustomers.add(customer);
             } catch (Exception e) {
@@ -51,6 +51,7 @@ public class TruckingSimulationDataDriver {
             testTruck.setTruckNumber(String.valueOf(random.nextInt(10000)));
             testTruck.setFillPercent(random.nextInt(95));
             testTruck.setGearPosition(gearPositions[random.nextInt(3)]);
+            testTruck.setOdometerReading(random.nextInt(400000));
             testTruck.setMilesFromShop(random.nextInt(1000));
             testTrucks.put(testTruck.getTruckNumber(),testTruck);
         }
@@ -152,7 +153,7 @@ public class TruckingSimulationDataDriver {
         reservation.setCheckInStatus("CheckedOut");
         reservation.setCustomerId(accountNumber);
         reservation.setCustomerName(accountNumber);
-        reservation.setTruckNumber(testTrucks.get(random.nextInt(29)).getTruckNumber());
+        reservation.setTruckNumber(testTrucks.get(testTrucks.keySet().toArray()[random.nextInt(testTrucks.size()-1)]).getTruckNumber());
         reservation.setReservationDate(new Date());
         reservation.setReservationId(String.valueOf(reservation.getReservationDate().getTime()));
         reservation.setOrigin(locations[random.nextInt(locations.length-1)]);
