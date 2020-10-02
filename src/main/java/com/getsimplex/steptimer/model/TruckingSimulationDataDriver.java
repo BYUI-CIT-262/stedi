@@ -72,7 +72,7 @@ public class TruckingSimulationDataDriver {
             testTruck.setFillPercent(testTruck.getFillPercent()-random.nextInt(3));
             KafkaTopicMessage fuelFillLevelMesage = new KafkaTopicMessage();
             fuelFillLevelMesage.setTopic("fuel-level");
-            fuelFillLevelMesage.setKey(Long.valueOf(testTruck.getTruckNumber()));
+            fuelFillLevelMesage.setKey(testTruck.getTruckNumber());
             fuelFillLevelMesage.setMessage(String.valueOf(testTruck.getFillPercent()));
             MessageIntake.route(fuelFillLevelMesage);
             Thread.sleep(2000);
@@ -84,7 +84,7 @@ public class TruckingSimulationDataDriver {
             testTruck.setGearPosition(gearPositions[random.nextInt(3)]);
             KafkaTopicMessage gearPositionMessage = new KafkaTopicMessage();
             gearPositionMessage.setTopic("gear-position");
-            gearPositionMessage.setKey(Long.valueOf(testTruck.getTruckNumber()));
+            gearPositionMessage.setKey(testTruck.getTruckNumber());
             gearPositionMessage.setMessage(String.valueOf(testTruck.getGearPosition()));
             MessageIntake.route(gearPositionMessage);
             Thread.sleep(2000);
@@ -105,8 +105,8 @@ public class TruckingSimulationDataDriver {
 
             KafkaTopicMessage vehicleStatusMessage = new KafkaTopicMessage();
             vehicleStatusMessage.setTopic("vehicle-status");
-            vehicleStatusMessage.setKey(Long.valueOf(testTruck.getTruckNumber()));
-            vehicleStatusMessage.setMessage(gson.toJson(vehicleStatusMessage));
+            vehicleStatusMessage.setKey(testTruck.getTruckNumber());
+            vehicleStatusMessage.setMessage(gson.toJson(vehicleStatus));
 
             MessageIntake.route(vehicleStatusMessage);
             Thread.sleep(2000);
@@ -129,7 +129,7 @@ public class TruckingSimulationDataDriver {
 
         KafkaTopicMessage checkInStatusMessage = new KafkaTopicMessage();
         checkInStatusMessage.setTopic("check-in");
-        checkInStatusMessage.setKey(Long.valueOf(changingReservation.getReservationId()));
+        checkInStatusMessage.setKey(changingReservation.getReservationId());
         checkInStatusMessage.setMessage(gson.toJson(checkInStatus));
 
         MessageIntake.route(checkInStatusMessage);

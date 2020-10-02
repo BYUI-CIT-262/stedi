@@ -37,7 +37,7 @@ public class BankingSimulationDataDriver {
                 CreateNewCustomer.createCustomer(customer);
                 KafkaTopicMessage customerMessage = new KafkaTopicMessage();
                 customerMessage.setTopic("bank-customers");
-                customerMessage.setKey(Long.valueOf(customer.getAccountNumber()));
+                customerMessage.setKey(customer.getAccountNumber());
                 customerMessage.setMessage(gson.toJson(customer));
                 MessageIntake.route(customerMessage);
                 testCustomers.add(customer);
@@ -53,7 +53,7 @@ public class BankingSimulationDataDriver {
             try {
                 KafkaTopicMessage balanceMessage = new KafkaTopicMessage();
                 balanceMessage.setTopic("balance-updates");
-                balanceMessage.setKey(Long.valueOf(testCustomer.getAccountNumber()));
+                balanceMessage.setKey(testCustomer.getAccountNumber());
                 balanceMessage.setMessage(String.valueOf(random.nextInt(100000)) + "." + String.valueOf(random.nextInt(99)));
                 MessageIntake.route(balanceMessage);
                 Thread.sleep(2000);
@@ -68,7 +68,7 @@ public class BankingSimulationDataDriver {
             try {
                 KafkaTopicMessage atmMessage = new KafkaTopicMessage();
                 atmMessage.setTopic("atm-visits");
-                atmMessage.setKey(Long.valueOf(testCustomer.getAccountNumber()));
+                atmMessage.setKey(testCustomer.getAccountNumber());
                 atmMessage.setMessage(gson.toJson(new Date()));
                 MessageIntake.route(atmMessage);
                 Thread.sleep(2000);
@@ -90,7 +90,7 @@ public class BankingSimulationDataDriver {
                 deposit.setDateAndTime(new Date());
                 KafkaTopicMessage depositMessage = new KafkaTopicMessage();
                 depositMessage.setTopic("bank-deposits");
-                depositMessage.setKey(Long.valueOf(testCustomer.getAccountNumber()));
+                depositMessage.setKey(testCustomer.getAccountNumber());
                 depositMessage.setMessage(gson.toJson(deposit));
                 MessageIntake.route(depositMessage);
                 Thread.sleep(2000);
@@ -127,7 +127,7 @@ public class BankingSimulationDataDriver {
 
                 KafkaTopicMessage atmwithdrawalMessage = new KafkaTopicMessage();
                 atmwithdrawalMessage.setTopic("atm-withdrawals");
-                atmwithdrawalMessage.setKey(Long.valueOf(testCustomer.getAccountNumber()));
+                atmwithdrawalMessage.setKey(testCustomer.getAccountNumber());
                 atmwithdrawalMessage.setMessage(gson.toJson(atmTransaction));
                 MessageIntake.route(atmwithdrawalMessage);
 
@@ -139,7 +139,7 @@ public class BankingSimulationDataDriver {
 
                 KafkaTopicMessage withdrawalMessage = new KafkaTopicMessage();
                 withdrawalMessage.setTopic("bank-withdrawals");
-                withdrawalMessage.setKey(Long.valueOf(testCustomer.getAccountNumber()));
+                withdrawalMessage.setKey(testCustomer.getAccountNumber());
                 withdrawalMessage.setMessage(gson.toJson(withdrawal));
                 MessageIntake.route(withdrawalMessage);
                 Thread.sleep(2000);
