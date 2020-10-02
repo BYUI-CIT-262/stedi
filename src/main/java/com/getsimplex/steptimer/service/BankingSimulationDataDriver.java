@@ -69,7 +69,7 @@ public class BankingSimulationDataDriver {
                 KafkaTopicMessage atmMessage = new KafkaTopicMessage();
                 atmMessage.setTopic("atm-visits");
                 atmMessage.setKey(testCustomer.getAccountNumber());
-                atmMessage.setMessage(gson.toJson(new Date()));
+                atmMessage.setMessage(testCustomer.getLocation());
                 MessageIntake.route(atmMessage);
                 Thread.sleep(2000);
             } catch (Exception e){
