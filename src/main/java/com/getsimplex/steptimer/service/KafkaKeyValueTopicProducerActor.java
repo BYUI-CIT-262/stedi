@@ -10,7 +10,7 @@ import java.util.logging.Logger;
 
 public class KafkaKeyValueTopicProducerActor extends UntypedActor {
     private static Logger logger = Logger.getLogger(KafkaKeyValueTopicProducerActor.class.getName());
-    private Optional<Producer<Long,String>> kafkaProducer = Optional.empty();
+    private Optional<Producer<String,String>> kafkaProducer = Optional.empty();
 
 
     public void onReceive(Object object){
@@ -23,7 +23,7 @@ public class KafkaKeyValueTopicProducerActor extends UntypedActor {
             }
             logger.info("Sending to Kafka Topic: "+kafkaTopicMessage.getTopic()+" message: "+kafkaTopicMessage.getMessage());
 
-            ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(kafkaTopicMessage.getTopic(), kafkaTopicMessage.getKey(),kafkaTopicMessage.getMessage());
+            ProducerRecord<String, String> record = new ProducerRecord<String, String>(kafkaTopicMessage.getTopic(), kafkaTopicMessage.getKey(),kafkaTopicMessage.getMessage());
             kafkaProducer.get().send(record);
             kafkaProducer.get().flush();
         }

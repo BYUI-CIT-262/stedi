@@ -13,7 +13,7 @@ import java.util.logging.Logger;
 public class KafkaRiskTopicProducerActor extends UntypedActor {
     private final static String TOPIC = "stedi-events";
     private static Logger logger = Logger.getLogger(KafkaRiskTopicProducerActor.class.getName());
-    private Optional<Producer<Long,String>> stediEventsTopic = Optional.empty();
+    private Optional<Producer<String,String>> stediEventsTopic = Optional.empty();
 
 
     public void onReceive(Object object){
@@ -26,7 +26,7 @@ public class KafkaRiskTopicProducerActor extends UntypedActor {
             }
             logger.info("Sending to Kafka Topic: stedi-events");
 
-            ProducerRecord<Long, String> record = new ProducerRecord<Long, String>(TOPIC, System.currentTimeMillis(),event.getMessage());
+            ProducerRecord<String, String> record = new ProducerRecord<String, String>(TOPIC, String.valueOf(System.currentTimeMillis()),event.getMessage());
             stediEventsTopic.get().send(record);
         }
 

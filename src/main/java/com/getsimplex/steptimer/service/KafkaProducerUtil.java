@@ -12,7 +12,7 @@ public class KafkaProducerUtil {
 
     private final static String BOOTSTRAP_SERVERS = "localhost:9092";
 
-    public static Producer<Long, String>    createProducer(){
+    public static Producer<String, String>    createProducer(){
 
         final Properties props = new Properties();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, BOOTSTRAP_SERVERS);
@@ -20,7 +20,7 @@ public class KafkaProducerUtil {
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, LongSerializer.class.getName());
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-        final Producer<Long, String> producer = new KafkaProducer<Long, String>(props);
+        final Producer<String, String> producer = new KafkaProducer<String, String>(props);
 
         return producer;
     }
