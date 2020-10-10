@@ -2,7 +2,6 @@ package com.getsimplex.steptimer.service;
 
 import akka.actor.UntypedActor;
 import com.getsimplex.steptimer.model.ContinueTruckingSimulation;
-import com.getsimplex.steptimer.model.TruckingSimulationDataDriver;
 
 import java.util.logging.Logger;
 

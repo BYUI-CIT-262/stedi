@@ -1,10 +1,8 @@
-package com.getsimplex.steptimer.model;
+package com.getsimplex.steptimer.service;
 
-import com.getsimplex.steptimer.service.CreateNewCustomer;
-import com.getsimplex.steptimer.service.MessageIntake;
+import com.getsimplex.steptimer.model.*;
 import com.getsimplex.steptimer.utils.JedisData;
 import com.google.gson.Gson;
-import scala.concurrent.java8.FuturesConvertersImpl;
 
 import java.util.*;
 
@@ -101,7 +99,7 @@ public class TruckingSimulationDataDriver {
             testTruck.setMilesFromShop(testTruck.getMilesFromShop()-random.nextInt(3));//always decreasing
             vehicleStatus.setMilesFromShop(testTruck.getMilesFromShop());
             testTruck.setOdometerReading(testTruck.getOdometerReading()+random.nextInt(100));//always increasing
-            vehicleStatus.setOdomoterReading(testTruck.getOdometerReading());
+            vehicleStatus.setOdometerReading(testTruck.getOdometerReading());
 
             KafkaTopicMessage vehicleStatusMessage = new KafkaTopicMessage();
             vehicleStatusMessage.setTopic("vehicle-status");

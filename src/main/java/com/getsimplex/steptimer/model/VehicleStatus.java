@@ -6,7 +6,7 @@ public class VehicleStatus {
     private String origin;
     private String destination;
     private Integer milesFromShop;
-    private Integer odomoterReading;
+    private Integer odometerReading;
 
     public String getTruckNumber() {
         return truckNumber;
@@ -40,11 +40,11 @@ public class VehicleStatus {
         this.milesFromShop = milesFromShop;
     }
 
-    public Integer getOdomoterReading() {
-        return odomoterReading;
+    public Integer getOdometerReading() {
+        return odometerReading;
     }
 
-    public void setOdomoterReading(Integer odomoterReading) {
-        this.odomoterReading = odomoterReading;
+    public void setOdometerReading(Integer odometerReading) {
+        this.odometerReading = odometerReading;
     }
 }
