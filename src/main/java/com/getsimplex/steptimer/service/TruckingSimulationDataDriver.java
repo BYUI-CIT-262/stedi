@@ -144,6 +144,8 @@ public class TruckingSimulationDataDriver {
         payment.setCustomerName(payingReservation.getCustomerName());
 
         JedisData.loadToJedis(payment, Payment.class);
+
+        Thread.sleep(2000);
     }
 
     public static Reservation createNewReservation(String accountNumber){
