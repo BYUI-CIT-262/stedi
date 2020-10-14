@@ -33,7 +33,7 @@ public class WebAppRunner {
 
 
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
-        staticFileLocation("/public");
+        Spark.externalStaticFileLocation("C:\\etc\\stedi\\content");
         webSocket("/socket", DeviceWebSocketHandler.class);
         webSocket("/timeruiwebsocket", TimerUIWebSocket.class);
         //post("/sensorUpdates", (req, res)-> WebServiceHandler.routeDeviceRequest(req));
