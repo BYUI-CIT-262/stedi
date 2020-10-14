@@ -1,2 +1,2 @@
 # stedi
-This is a test change
+This is the Backend Team's branch of the Stedi project.
