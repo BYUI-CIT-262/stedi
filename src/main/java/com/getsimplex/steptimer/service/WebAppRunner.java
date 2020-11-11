@@ -33,7 +33,13 @@ public class WebAppRunner {
 
 
 		//secure("/Applications/steptimerwebsocket/keystore.jks","password","/Applications/steptimerwebsocket/keystore.jks","password");
-        staticFileLocation("/public");
+        String externalContent = Configuration.getConfiguration().getString("externalContent");
+        if(externalContent!=null && !externalContent.isEmpty()){
+            externalStaticFileLocation(externalContent);
+        }
+        else {
+            staticFileLocation("/public");
+        }
         webSocket("/socket", DeviceWebSocketHandler.class);
         webSocket("/timeruiwebsocket", TimerUIWebSocket.class);
         //post("/sensorUpdates", (req, res)-> WebServiceHandler.routeDeviceRequest(req));
