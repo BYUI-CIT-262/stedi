@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: stedi
-          image: gcr.io/cubs-consulting/stedi
+          image: gcr.io/cit-262-fall/stedi
           ports:
             - containerPort: 443
           resources:
